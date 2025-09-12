@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { CircleAlert, Terminal } from 'lucide-react';
+import { CircleAlert, Loader2 } from 'lucide-react';
 import { route } from 'ziggy-js';
 
 
@@ -61,7 +61,16 @@ export default function Index() {
                     <Label htmlFor="product description">Description</Label>
                     <Textarea placeholder='Product Description' value={data.description} onChange={(e) => setData("description", e.target.value)}/>
                   </div>
-                  <Button type='submit'>Add Product</Button>
+                  <Button disabled={processing} type='submit' className="min-w-[140px]">
+                    {processing ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      'Add Product'
+                    )}
+                  </Button>
                </form>
             </div>
         </AppLayout>

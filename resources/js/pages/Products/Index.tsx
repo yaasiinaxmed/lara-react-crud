@@ -4,7 +4,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck, Loader2 } from 'lucide-react';
 import { route } from 'ziggy-js';
 
 
@@ -83,8 +83,15 @@ export default function Index() {
                           <Button className='bg-slate-700 hover:bg-slate-800'>
                                     Edit
                                 </Button></Link>
-                                <Button disabled={processing} onClick={() => handleDelete(product.id, product.name)} className="bg-red-500 hover:bg-red-600">
-                                    Delete 
+                                <Button disabled={processing} onClick={() => handleDelete(product.id, product.name)} className="bg-red-500 hover:bg-red-600 min-w-[80px]">
+                                    {processing ? (
+                                        <>
+                                            <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                            Deleting...
+                                        </>
+                                    ) : (
+                                        'Delete'
+                                    )}
                                 </Button>
                                
                             </TableCell>
