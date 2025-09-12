@@ -13,9 +13,12 @@ export default defineConfig({
         }),
         react(),
         tailwindcss(),
-        wayfinder({
-            formVariants: true,
-        }),
+        // Only enable wayfinder in development or when PHP is available
+        ...(process.env.NODE_ENV === 'development' ? [
+            wayfinder({
+                formVariants: true,
+            })
+        ] : []),
     ],
     esbuild: {
         jsx: 'automatic',
