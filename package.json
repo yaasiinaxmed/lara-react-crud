@@ -5,6 +5,7 @@
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",
         "dev": "vite",
+        "start": "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}",
         "format": "prettier --write resources/",
         "format:check": "prettier --check resources/",
         "lint": "eslint . --fix",
