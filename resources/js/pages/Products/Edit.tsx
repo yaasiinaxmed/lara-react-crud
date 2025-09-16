@@ -15,6 +15,7 @@ interface Product {
     name: string;
     price: number;
     description: string;
+    stock: number;
 }
 
 interface props {
@@ -27,6 +28,7 @@ export default function Edit({product}: props) {
         name: product.name,
         price: product.price,
         description: product.description,
+        stock: product.stock,
     })
 
     const handleUpdate = (e: React.FormEvent) => {
@@ -37,45 +39,104 @@ export default function Edit({product}: props) {
     return (
         <AppLayout breadcrumbs={[{title: "Edit a Product", href: `/products/${product.id}/edit`}]}>
             <Head title="Update a Product" />
-            <div className='w-8/12 p-4'>
-               <form onSubmit={handleUpdate} className='space-y-5'>
-                {/* Display errors */}
-                {Object.keys(errors).length > 0 && (
-                    <Alert >
-                    <CircleAlert />
-                    <AlertTitle>Errors!</AlertTitle>
-                    <AlertDescription>
-                       <ul className='list-disc list-inside'>
-                        {Object.entries(errors).map(([key, message]) => (
-                            <li key={key}>{message as string}</li>
-                        ))}
-                          </ul>
-                    </AlertDescription>
-                  </Alert>
-                )}
-                  <div className='gap-1.5'>
-                    <Label htmlFor="product name">Name</Label>
-                    <Input placeholder='Product Name' value={data.name} onChange={(e) => setData('name', e.target.value)}></Input>
-                  </div>
-                  <div className="gap-1.5">
-                    <Label htmlFor="product price">Price</Label>
-                    <Input placeholder='Product Price' value={data.price} onChange={(e) => setData('price', e.target.value)}></Input>
-                  </div>
-                  <div className="gap-1.5">
-                    <Label htmlFor="product description">Description</Label>
-                    <Textarea placeholder='Product Description' value={data.description} onChange={(e) => setData("description", e.target.value)}/>
-                  </div>
-                  <Button disabled={processing} type='submit' className="min-w-[140px]">
-                    {processing ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Updating...
-                      </>
-                    ) : (
-                      'Update Product'
-                    )}
-                  </Button>
-               </form>
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6">
+                <div className="max-w-2xl mx-auto">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Edit Product</h1>
+                        <p className="text-slate-600 dark:text-slate-300">Update your product information</p>
+                    </div>
+
+                    {/* Form */}
+                    <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 p-8">
+                        <form onSubmit={handleUpdate} className='space-y-6'>
+                            {/* Display errors */}
+                            {Object.keys(errors).length > 0 && (
+                                <Alert className="border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800">
+                                    <CircleAlert className="h-4 w-4 text-red-600 dark:text-red-400" />
+                                    <AlertTitle className="text-red-800 dark:text-red-200">Please fix the following errors:</AlertTitle>
+                                    <AlertDescription className="text-red-700 dark:text-red-300">
+                                        <ul className='list-disc list-inside mt-2'>
+                                            {Object.entries(errors).map(([key, message]) => (
+                                                <li key={key}>{message as string}</li>
+                                            ))}
+                                        </ul>
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+
+                            <div className='space-y-2'>
+                                <Label htmlFor="name" className="text-slate-900 dark:text-white font-medium">Product Name</Label>
+                                <Input 
+                                    id="name"
+                                    placeholder='Enter product name' 
+                                    value={data.name} 
+                                    onChange={(e) => setData('name', e.target.value)}
+                                    className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="price" className="text-slate-900 dark:text-white font-medium">Price</Label>
+                                <Input 
+                                    id="price"
+                                    type="number"
+                                    step="0.01"
+                                    placeholder='Enter product price' 
+                                    value={data.price} 
+                                    onChange={(e) => setData('price', parseFloat(e.target.value) || 0)}
+                                    className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="description" className="text-slate-900 dark:text-white font-medium">Description</Label>
+                                <Textarea 
+                                    id="description"
+                                    placeholder='Enter product description' 
+                                    value={data.description} 
+                                    onChange={(e) => setData("description", e.target.value)}
+                                    className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500 min-h-[100px]"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="stock" className="text-slate-900 dark:text-white font-medium">Stock Quantity</Label>
+                                <Input 
+                                    id="stock"
+                                    type="number"
+                                    min="0"
+                                    placeholder='Enter stock quantity' 
+                                    value={data.stock} 
+                                    onChange={(e) => setData('stock', parseInt(e.target.value) || 0)}
+                                    className="border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div className="flex gap-4 pt-4">
+                                <Button 
+                                    disabled={processing} 
+                                    type='submit' 
+                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 flex-1"
+                                >
+                                    {processing ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Updating Product...
+                                        </>
+                                    ) : (
+                                        'Update Product'
+                                    )}
+                                </Button>
+                                <Link href={route('products.index')}>
+                                    <Button type="button" variant="outline" className="border-slate-300 dark:border-slate-600">
+                                        Cancel
+                                    </Button>
+                                </Link>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </AppLayout>
     );
